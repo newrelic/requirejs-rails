@@ -57,6 +57,7 @@ module Requirejs::Rails
         dir
         fileExclusionRegExp
         findNestedDependencies
+        generateSourceMaps
         has
         hasOnSave
         include

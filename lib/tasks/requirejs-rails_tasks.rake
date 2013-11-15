@@ -122,6 +122,21 @@ EOM
         digest_name = asset_name.sub(/\.(\w+)$/) { |ext| "-#{requirejs.builder.digest_for(built_asset_path)}#{ext}" }
         digest_asset_path = requirejs.config.target_dir + digest_name
         requirejs.manifest[asset_name] = digest_name
+
+        # handle source maps
+        if File.exists?("#{built_asset_path}.map")
+          `sed -i '' -e'$ s/sourceMappingURL=#{asset_name}.map/sourceMappingURL=#{digest_name}.map/' #{built_asset_path}`
+          FileUtils.cp "#{built_asset_path}.map", "#{digest_asset_path}.map"
+
+          # Create the compressed versions
+          File.open("#{built_asset_path}.map.gz",'wb') do |f|
+            zgw = Zlib::GzipWriter.new(f, Zlib::BEST_COMPRESSION)
+            zgw.write((requirejs.config.target_dir + ("#{asset_name}.map")).read)
+            zgw.close
+          end
+          FileUtils.cp "#{built_asset_path}.map.gz", "#{digest_asset_path}.map.gz"
+        end
+
         FileUtils.cp built_asset_path, digest_asset_path
 
         # Create the compressed versions
