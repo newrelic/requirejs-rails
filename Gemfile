@@ -7,7 +7,7 @@ gemspec
 
 group :development, :test do
   # jquery-rails is used by the dummy application
-  gem "jquery-rails"
+  gem "jquery-rails", ">= 4.0.1"
 
   # ExecJS is used by our tests
   gem "execjs"
